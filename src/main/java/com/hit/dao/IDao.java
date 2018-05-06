@@ -7,7 +7,15 @@ package com.hit.dao;
  */
 public interface IDao<ID extends java.io.Serializable, T> {
     /**
+     * Saves a given entity.
+     *
+     * @param entity - given entity.
+     */
+    void save(T entity);
+
+    /**
      * Deletes a given entity.
+     *
      * @param entity - given entity.
      * @throws java.lang.IllegalArgumentException - in case given entity is null.
      */
@@ -15,15 +23,10 @@ public interface IDao<ID extends java.io.Serializable, T> {
 
     /**
      * Retrieves an entity by its id.
+     *
      * @param id - can't be null.
      * @return - the entity with the given id or null if not found.
      * @throws java.lang.IllegalArgumentException - if the given id is null.
      */
     T find(ID id) throws java.lang.IllegalArgumentException;
-
-    /**
-     * Saves a given entity.
-     * @param entity - given entity.
-     */
-    void save(T entity);
 }

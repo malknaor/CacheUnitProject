@@ -16,32 +16,31 @@ public class DataModel<T> implements Serializable {
     }
 
     /**
-     *
-     * @param id
-     * @return -  The a content of a given id.
+     * Get content
+     * @return -  The current content.
      */
-    public T getContent(Long id){
+    public T getContent() {
         return content;
     }
 
     /**
-     * Sets a given content.
+     * Set content
      * @param content - given content to set as the current content.
      */
-    public void setContent(T content){
+    public void setContent(T content) {
         this.content = content;
     }
 
     /**
-     * Returns the current id.
-     * @return
+     * Get id
+     * @return - The current id
      */
     public Long getDataModelId() {
         return id;
     }
 
     /**
-     * Sets a given id.
+     * Set id
      * @param id - given id to set as the current id.
      */
     public void setDataModelId(Long id){
@@ -50,16 +49,16 @@ public class DataModel<T> implements Serializable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return Long.hashCode(this.id);
     }
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        return this.id == ((DataModel<T>)obj).getDataModelId() && this.content == ((DataModel<T>)obj).getContent();
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        return this.id + " " + this.content;
     }
 }
