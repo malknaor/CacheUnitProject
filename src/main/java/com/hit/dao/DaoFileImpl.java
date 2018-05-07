@@ -23,13 +23,17 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
      */
     public DaoFileImpl(String filePath) {
         this.filePath = filePath;
-        this.daoMap = new HashMap<>();
+        this.daoMap = new HashMap();
         this.toInitialize = true;
     }
 
     @Override
     public void save(DataModel<T> entity) {
         try {
+            if (this.toInitialize) {
+                writeMapToFile();
+            }
+
             readMapFromFile();
 
             if (entity != null) {
@@ -44,6 +48,10 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     @Override
     public void delete(DataModel<T> entity) {
         try {
+            if (this.toInitialize) {
+                writeMapToFile();
+            }
+
             readMapFromFile();
 
             if (entity != null) {
@@ -60,6 +68,10 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         DataModel<T> retValue = null;
 
         try {
+            if (this.toInitialize) {
+                writeMapToFile();
+            }
+
             readMapFromFile();
             retValue = this.daoMap.get(id);
         } catch (IOException | ClassNotFoundException e) {
@@ -76,7 +88,9 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
      */
     private void writeMapToFile() throws IOException, ClassNotFoundException {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.filePath, false))) {
-
+            if (this.toInitialize) {
+               this.toInitialize = false;
+            }
             outputStream.writeObject(this.daoMap);
         }
     }
@@ -88,10 +102,6 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
      */
     private void readMapFromFile() throws IOException, ClassNotFoundException {
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.filePath))) {
-            if (this.toInitialize){
-                writeMapToFile();
-                toInitialize = false;
-            }
             this.daoMap = (HashMap<Long, DataModel<T>>) inputStream.readObject();
         }
     }
