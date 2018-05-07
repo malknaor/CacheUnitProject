@@ -1,66 +1,98 @@
 package com.hit.dao;
 
+import com.hit.dm.DataModel;
+import com.sun.javafx.collections.MappingChange;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- *
  * @param <T>
  */
-public class DaoFileImpl<T> implements IDao<Long, T> {
-    private String filePath;
-    private BufferedReader reader;
-    private OutputStream outStream;
-    private Boolean hasInitialized;
+public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
+    private final String filePath;
+    private Map<Long, DataModel<T>> daoMap;
+    private boolean toInitialize;
 
     /**
      * C'tor
+     *
      * @param filePath - file path
      */
     public DaoFileImpl(String filePath) {
         this.filePath = filePath;
-        this.hasInitialized = false;
+        this.daoMap = new HashMap<>();
+        this.toInitialize = true;
     }
 
     @Override
-    public void save(T entity) {
-        if (!hasInitialized){
-            initializeIOStream();
+    public void save(DataModel<T> entity) {
+        try {
+            readMapFromFile();
+
+            if (entity != null) {
+                this.daoMap.put(entity.getDataModelId(), entity);
+                writeMapToFile();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-
     }
 
     @Override
-    public void delete(T entity) throws IllegalArgumentException {
-        if (!hasInitialized){
-            initializeIOStream();
+    public void delete(DataModel<T> entity) {
+        try {
+            readMapFromFile();
+
+            if (entity != null) {
+                this.daoMap.remove(entity.getDataModelId(), entity);
+                writeMapToFile();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-
-
     }
 
     @Override
-    public T find(Long id) throws IllegalArgumentException {
-        if (!hasInitialized){
-            initializeIOStream();
+    public DataModel<T> find(Long id) {
+        DataModel<T> retValue = null;
+
+        try {
+            readMapFromFile();
+            retValue = this.daoMap.get(id);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
-
-
-        return null;
+        return retValue;
     }
 
     /**
-     * Initialize I/O stream
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
      */
-    private void initializeIOStream() {
-        try {
-            this.reader = new BufferedReader(new InputStreamReader(new FileInputStream(this.filePath)));
-            this.outStream = new FileOutputStream(this.filePath);
+    private void writeMapToFile() throws IOException, ClassNotFoundException {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.filePath, false))) {
+
+            outputStream.writeObject(this.daoMap);
         }
-        catch (FileNotFoundException ex){
-            // Implement later + Ask nissim
+    }
+
+    /**
+     *
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readMapFromFile() throws IOException, ClassNotFoundException {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.filePath))) {
+            if (this.toInitialize){
+                writeMapToFile();
+                toInitialize = false;
+            }
+            this.daoMap = (HashMap<Long, DataModel<T>>) inputStream.readObject();
         }
     }
 }

@@ -54,11 +54,16 @@ public class DataModel<T> implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return this.id == ((DataModel<T>)obj).getDataModelId() && this.content == ((DataModel<T>)obj).getContent();
+        if (this == obj) {
+            return true;
+        }
+
+        return (this.id.equals(((DataModel<T>)obj).getDataModelId())
+                && this.content.equals(((DataModel<T>)obj).getContent()));
     }
 
     @Override
     public String toString() {
-        return this.id + " " + this.content;
+        return this.id + " " + this.content.toString();
     }
 }
