@@ -25,8 +25,8 @@ public class CacheUnit<T> {
 
     /**
      *
-     * @param ids - List
-     * @return - DataMadel<T>[]
+     * @param ids - ids to identify requested values
+     * @return DataMadel<T>[] - requested values
      * @throws ClassNotFoundException -
      * @throws IOException -
      */

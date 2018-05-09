@@ -1,9 +1,6 @@
 package com.hit.dao;
 
 import com.hit.dm.DataModel;
-import com.sun.javafx.collections.MappingChange;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +14,6 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     private boolean toInitialize;
 
     /**
-     * C'tor
      *
      * @param filePath - file path
      */
@@ -84,9 +80,8 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     /**
      *
      * @throws IOException
-     * @throws ClassNotFoundException
      */
-    private void writeMapToFile() throws IOException, ClassNotFoundException {
+    private void writeMapToFile() throws IOException{
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.filePath, false))) {
             if (this.toInitialize) {
                this.toInitialize = false;
