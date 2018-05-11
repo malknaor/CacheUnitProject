@@ -9,7 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Arquillian JUnit:Release" level="project" />
-    <orderEntry type="library" name="CacheAlgorithm" level="project" />
     <orderEntry type="module-library">
       <library name="JUnit4">
         <CLASSES>
@@ -21,5 +20,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="gson-2.8.1" level="project" />
+    <orderEntry type="library" name="CacheAlgorithm" level="project" />
   </component>
 </module>

@@ -15,7 +15,7 @@ public class CacheUnitTest {
     @Test
     public void getDataModels() {
         IAlgoCache<Long, DataModel<String>> algo = new LRUAlgoCacheImpl<>(5);
-        IDao<Long, DataModel<String>> dao = new DaoFileImpl<>("C:\\JAVA TEST\\TestFile.txt");
+        IDao<Long, DataModel<String>> dao = new DaoFileImpl<>("src/main/resources/datasource.txt");
         CacheUnit<String> cacheUnit = new CacheUnit<>(algo, dao);
 
         Long[] ids = new Long[] {0L, 1L, 2L, 3L, 4L, 5L};
@@ -30,12 +30,8 @@ public class CacheUnitTest {
         }
 
         DataModel<String>[] retDataModels = null;
-        try {
-            retDataModels = cacheUnit.getDataModels(ids);
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
 
+        retDataModels = cacheUnit.getDataModels(ids);
         for (int i = 0; i < dataModels.length; i++) {
             assertEquals(dataModels[i], retDataModels[i]);
         }

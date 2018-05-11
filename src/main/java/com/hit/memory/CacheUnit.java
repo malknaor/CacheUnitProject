@@ -27,10 +27,8 @@ public class CacheUnit<T> {
      *
      * @param ids - ids to identify requested values
      * @return DataMadel<T>[] - requested values
-     * @throws ClassNotFoundException -
-     * @throws IOException -
      */
-    public DataModel<T>[] getDataModels(Long[] ids) throws ClassNotFoundException, IOException {
+    public DataModel<T>[] getDataModels(Long[] ids) {
         DataModel<T>[] dataModelArr = new DataModel[ids.length];
         int i = 0;
 
