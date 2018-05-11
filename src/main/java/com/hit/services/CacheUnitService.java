@@ -33,10 +33,11 @@ public class CacheUnitService<T> {
     public boolean update(DataModel<T>[] dataModels) {
         DataModel<T>[] dms = getFilteredDataModels(dataModels);
 
-        for (int i = 0; i < dms.length; i++) {
-            for (int j = 0; j < dataModels.length; j++) {
-                if (dms[i].getDataModelId().equals(dataModels[i].getDataModelId())) {
-                    dms[i].setContent(dataModels[i].getContent());
+        for (DataModel<T> dm : dms) {
+            for (DataModel<T> dam : dataModels) {
+                if (dm.getDataModelId().equals(dam.getDataModelId())) {
+                    dm.setContent(dam.getContent());
+                    break;
                 }
             }
         }
