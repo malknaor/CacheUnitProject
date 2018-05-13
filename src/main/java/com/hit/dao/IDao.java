@@ -1,7 +1,6 @@
 package com.hit.dao;
 
 /**
- *
  * @param <ID>
  * @param <T>
  */

@@ -6,10 +6,7 @@ import com.hit.dao.DaoFileImpl;
 import com.hit.dao.IDao;
 import com.hit.dm.DataModel;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
-
-import java.io.IOException;
 
 public class CacheUnitTest {
     @Test
@@ -18,7 +15,7 @@ public class CacheUnitTest {
         IDao<Long, DataModel<String>> dao = new DaoFileImpl<>("src/main/resources/datasource.txt");
         CacheUnit<String> cacheUnit = new CacheUnit<>(algo, dao);
 
-        Long[] ids = new Long[] {0L, 1L, 2L, 3L, 4L, 5L};
+        Long[] ids = new Long[]{0L, 1L, 2L, 3L, 4L, 5L};
         DataModel<String>[] dataModels = new DataModel[6];
 
         for (int i = 0; i < dataModels.length; i++) {

@@ -4,12 +4,11 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- *
  * @param <T>
  */
 public class Request<T> implements Serializable {
-    Map<String, String> headers;
-    T body;
+    private Map<String, String> headers;
+    private T body;
 
     public Request(Map<String, String> headers, T body) {
         this.headers = headers;
@@ -34,6 +33,6 @@ public class Request<T> implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString();
+        return this.headers.toString();
     }
 }

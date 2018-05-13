@@ -1,7 +1,6 @@
 package com.hit.dao;
 
 import com.hit.dm.DataModel;
-
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +13,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     private Map<Long, DataModel<T>> daoMap;
     private boolean toInitialize;
     private int capacity;
+
     /**
      * @param filePath - file path
      */
@@ -23,7 +23,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         this.toInitialize = true;
     }
 
-    public DaoFileImpl(String filePath, int capacity){
+    public DaoFileImpl(String filePath, int capacity) {
         this.filePath = filePath;
         this.capacity = capacity;
     }
@@ -69,7 +69,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     public DataModel<T> find(Long id) throws IllegalArgumentException {
         DataModel<T> retValue = null;
 
-        if (id == null){
+        if (id == null) {
             throw new IllegalArgumentException("");
         }
 
