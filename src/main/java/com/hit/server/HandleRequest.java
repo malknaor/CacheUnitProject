@@ -25,23 +25,30 @@ public class HandleRequest<T> implements Runnable {
             String reqJson = reader.next();
             Type ref = new TypeToken<Request<T>[]>(){}.getType();
             Request<DataModel<T>[]> request = new Gson().fromJson(reqJson, ref);
-            System.out.println(request.toString());
+
             String action = request.getHeaders().get("action");
             switch (action.toLowerCase()) {
                 case "update":
                     if (this.cacheUnitController.update(request.getBody())) {
-                        write.print(request);
+                        write.println("Updated the requested content...");
                     }
                     break;
                 case "delete":
                     if (this.cacheUnitController.delete(request.getBody())){
-                        write.print(request);
+                        write.println("Deleted the requested content...");
                     }
                     break;
                 case "get":
-                    this.cacheUnitController.get(request.getBody());
+                    DataModel<T>[] dms = this.cacheUnitController.get(request.getBody());
+                    write.print("Retrieved the requested content...");
+
+                    for (DataModel<T> dm : dms) {
+                        write.println(dm.toString());
+                    }
+
                     break;
-                    default:
+                default:
+
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -23,7 +23,12 @@ public class CLI extends Observable implements Runnable {
             try {
                 command = this.inputStream.next();
 
-                if (command.toLowerCase().equals("start") || command.toLowerCase().equals("stop")) {
+                if (command.toLowerCase().equals("start")) {
+                    this.write("Starting server...");
+                    setChanged();
+                    notifyObservers(command);
+                } else if (command.toLowerCase().equals("stop")) {
+                    this.write("Server shutdown...");
                     setChanged();
                     notifyObservers(command);
                 } else {
