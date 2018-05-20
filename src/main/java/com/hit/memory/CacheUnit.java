@@ -3,10 +3,8 @@ package com.hit.memory;
 import com.hit.algorithm.IAlgoCache;
 import com.hit.dao.IDao;
 import com.hit.dm.DataModel;
-import java.io.IOException;
 
 /**
- *
  * @param <T>
  */
 public class CacheUnit<T> {
@@ -14,9 +12,8 @@ public class CacheUnit<T> {
     private IDao<Long, DataModel<T>> dao;
 
     /**
-     *
      * @param algo - Cache paging algorithm and manage them
-     * @param dao - Operate as a hard drive
+     * @param dao  - Operate as a hard drive
      */
     public CacheUnit(IAlgoCache<Long, DataModel<T>> algo, IDao<Long, DataModel<T>> dao) {
         this.algo = algo;
@@ -24,7 +21,6 @@ public class CacheUnit<T> {
     }
 
     /**
-     *
      * @param ids - ids to identify requested values
      * @return DataMadel<T>[] - requested values
      */
@@ -34,7 +30,7 @@ public class CacheUnit<T> {
 
         DataModel<T> value;
 
-        for (Long id: ids) {
+        for (Long id : ids) {
             value = algo.putElement(id, null);
             //  if - value != null => cache is full => retrieve the DM with DAO and put the DM to ALGO.
             //  else - value == null => cache is not full OR the item exist in ALGO =>
@@ -58,7 +54,7 @@ public class CacheUnit<T> {
         return dataModelArr;
     }
 
-    private DataModel<T> doIfCacheIsFull(Long id){
+    private DataModel<T> doIfCacheIsFull(Long id) {
         DataModel<T> value = dao.find(id);
         dao.delete(value);
         DataModel<T> tempValue = algo.putElement(id, value);

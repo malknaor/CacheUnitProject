@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * A container Class - obtaining id and content.
+ *
  * @param <T> -
  */
 public class DataModel<T> implements Serializable {
@@ -17,6 +18,7 @@ public class DataModel<T> implements Serializable {
 
     /**
      * Get content
+     *
      * @return -  The current content.
      */
     public T getContent() {
@@ -25,6 +27,7 @@ public class DataModel<T> implements Serializable {
 
     /**
      * Set content
+     *
      * @param content - given content to set as the current content.
      */
     public void setContent(T content) {
@@ -33,6 +36,7 @@ public class DataModel<T> implements Serializable {
 
     /**
      * Get id
+     *
      * @return - The current id
      */
     public Long getDataModelId() {
@@ -41,9 +45,10 @@ public class DataModel<T> implements Serializable {
 
     /**
      * Set id
+     *
      * @param id - given id to set as the current id.
      */
-    public void setDataModelId(Long id){
+    public void setDataModelId(Long id) {
         this.id = id;
     }
 
@@ -58,8 +63,8 @@ public class DataModel<T> implements Serializable {
             return true;
         }
 
-        return (this.id.equals(((DataModel<T>)obj).getDataModelId())
-                && this.content.equals(((DataModel<T>)obj).getContent()));
+        return (this.id.equals(((DataModel<T>) obj).getDataModelId())
+                && this.content.equals(((DataModel<T>) obj).getContent()));
     }
 
     @Override
