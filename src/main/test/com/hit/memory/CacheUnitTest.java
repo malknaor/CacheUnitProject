@@ -26,9 +26,8 @@ public class CacheUnitTest {
             dao.save(dataModel);
         }
 
-        DataModel<String>[] retDataModels = null;
+        DataModel<String>[] retDataModels = cacheUnit.getDataModels(ids);
 
-        retDataModels = cacheUnit.getDataModels(ids);
         for (int i = 0; i < dataModels.length; i++) {
             assertEquals(dataModels[i], retDataModels[i]);
         }
