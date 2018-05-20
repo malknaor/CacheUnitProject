@@ -20,6 +20,9 @@ public class CLI extends Observable implements Runnable {
     @Override
     public void run() {
         String command = "";
+        
+        this.write("Starting the main system..." + "\n");
+        this.write("Ready to receive a command: " + "\n");
 
         while (!command.toLowerCase().equals("exit")) {
             try {

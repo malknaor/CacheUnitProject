@@ -17,7 +17,6 @@ public class Server implements Observer {
     public Server() {
         this.start = "start";
         this.stop = "stop";
-//        this.loopCondition = true;
     }
 
     @Override
