@@ -11,17 +11,15 @@ public class CacheUnitService<T> {
     private CacheUnit<T> cacheUnit;
 
     public CacheUnitService() {
-        this.cacheUnit = new CacheUnit<T>(new SecondChanceAlgoImpl<Long, DataModel<T>>(10),
+        this.cacheUnit = new CacheUnit<>(new SecondChanceAlgoImpl<Long, DataModel<T>>(10),
                 new DaoFileImpl<T>("src/main/resources/datasource.txt"));
     }
 
     public boolean delete(DataModel<T>[] dataModels) {
         DataModel<T>[] dms = getFilteredDataModels(dataModels);
 
-        synchronized (this) {
-            for (DataModel<T> dm : dms) {
-                dm = null;
-            }
+        for (DataModel<T> dm : dms) {
+            dm = null;
         }
 
         return dataModels.length == dms.length;
@@ -34,13 +32,11 @@ public class CacheUnitService<T> {
     public boolean update(DataModel<T>[] dataModels) {
         DataModel<T>[] dms = getFilteredDataModels(dataModels);
 
-        synchronized (this) {
-            for (DataModel<T> dm : dms) {
-                for (DataModel<T> dam : dataModels) {
-                    if (dm.getDataModelId().equals(dam.getDataModelId())) {
-                        dm.setContent(dam.getContent());
-                        break;
-                    }
+        for (DataModel<T> dm : dms) {
+            for (DataModel<T> dam : dataModels) {
+                if (dm.getDataModelId().equals(dam.getDataModelId())) {
+                    dm.setContent(dam.getContent());
+                    break;
                 }
             }
         }
@@ -48,7 +44,7 @@ public class CacheUnitService<T> {
         return dataModels.length == dms.length;
     }
 
-    private synchronized DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
+    private DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
         List<Long> ids = new ArrayList<Long>();
 
         for (DataModel<T> dm : dataModels) {
