@@ -1,3 +1,4 @@
+
 package com.hit.dao;
 
 import com.hit.dm.DataModel;
@@ -21,22 +22,22 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         this.filePath = filePath;
         this.daoMap = new HashMap();
         this.toInitialize = true;
+        this.capacity = Integer.MAX_VALUE;
     }
 
     public DaoFileImpl(String filePath, int capacity) {
         this.filePath = filePath;
+        this.daoMap = new HashMap();
         this.capacity = capacity;
+        this.toInitialize = true;
     }
 
     @Override
     public void save(DataModel<T> entity) {
         try {
             if (this.toInitialize) {
-                writeMapToFile();
+                readMapFromFile();
             }
-
-            readMapFromFile();
-
             if (entity != null) {
                 this.daoMap.put(entity.getDataModelId(), entity);
                 writeMapToFile();
@@ -54,12 +55,12 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
 
         try {
             if (this.toInitialize) {
+                readMapFromFile();
+            }
+            if (entity.getDataModelId() != null) {
+                this.daoMap.remove(entity.getDataModelId(), entity);
                 writeMapToFile();
             }
-
-            readMapFromFile();
-            this.daoMap.remove(entity.getDataModelId(), entity);
-            writeMapToFile();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -70,15 +71,13 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         DataModel<T> retValue = null;
 
         if (id == null) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Illegal argument.");
         }
 
         try {
             if (this.toInitialize) {
-                writeMapToFile();
+                readMapFromFile();
             }
-
-            readMapFromFile();
             retValue = this.daoMap.get(id);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -87,9 +86,9 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         return retValue;
     }
 
-
     /**
-     * @throws IOException
+     * Write the current map to the datasource file
+     * @throws IOException -
      */
     private void writeMapToFile() throws IOException {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(this.filePath, false))) {
@@ -102,12 +101,62 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
     }
 
     /**
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * Read the map from the datasource file
+     * @throws IOException -
+     * @throws ClassNotFoundException -
      */
     private void readMapFromFile() throws IOException, ClassNotFoundException {
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.filePath))) {
+            if (this.toInitialize) {
+                synchronized (this) {
+                    initializeDAO(); // used to initialize the dao if needed **Only happen at the beginning**
+                }
+                writeMapToFile();
+            }
+
             this.daoMap = (HashMap<Long, DataModel<T>>) inputStream.readObject();
         }
+    }
+
+    /**
+     * Used to Initialize the dataresource file  and put values when needed.
+     * This is not necessary
+     */
+    private void initializeDAO(){
+        for (int i = 0; i < 1000; i++){
+            this.daoMap.put((long)i, new DataModel<T>((long)i, (T) ("#" + i + "#")));
+        }
+    }
+
+    /**
+     * Returns a string representation of the object. In general, the
+     * {@code toString} method returns a string that
+     * "textually represents" this object. The result should
+     * be a concise but informative representation that is easy for a
+     * person to read.
+     * It is recommended that all subclasses override this method.
+     * <p>
+     * The {@code toString} method for class {@code Object}
+     * returns a string consisting of the name of the class of which the
+     * object is an instance, the at-sign character `{@code @}', and
+     * the unsigned hexadecimal representation of the hash code of the
+     * object. In other words, this method returns a string equal to the
+     * value of:
+     * <blockquote>
+     * <pre>
+     * getClass().getName() + '@' + Integer.toHexString(hashCode())
+     * </pre></blockquote>
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        String tostring = "";
+
+        for (DataModel<T> dm: this.daoMap.values()) {
+            tostring += dm.toString() + "\n";
+        }
+
+        return tostring;
     }
 }

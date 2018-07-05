@@ -1,6 +1,8 @@
 package com.hit.server;
 
+
 import com.hit.services.CacheUnitController;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +15,7 @@ public class Server implements Observer {
     private ServerSocket serverSocket;
     private final String start;
     private final String stop;
+    private boolean continueLoop;
 
     public Server() {
         this.start = "start";
@@ -25,7 +28,7 @@ public class Server implements Observer {
 
         if (command.equals(this.start)) {
             startServer();
-    } else if (command.equals(this.stop)) {
+        } else if (command.equals(this.stop)) {
             this.stopServer();
         }
     }
@@ -35,17 +38,16 @@ public class Server implements Observer {
         Socket socket;
 
         try {
+            this.continueLoop = true;
             this.serverSocket = new ServerSocket(this.port);
-
-            while (true) {
-                try {
-                    socket = this.serverSocket.accept();
-                    new Thread(new HandleRequest<>(new CacheUnitController<String>(), socket)).run();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw e;
-                }
+            HandleRequest.countRequests = 0;
+            CacheUnitController<String> cacheUnitController = new CacheUnitController<String>();
+            while (this.continueLoop) {
+                socket = this.serverSocket.accept();
+                new Thread(new HandleRequest<String>(cacheUnitController, socket)).run();
             }
+        } catch (SocketException e) {
+            /// This exception happens only when receive STOP command
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,6 +55,7 @@ public class Server implements Observer {
 
     private synchronized void stopServer() {
         try {
+            this.continueLoop = false;
             this.serverSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
