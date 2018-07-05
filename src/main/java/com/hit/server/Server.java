@@ -46,8 +46,6 @@ public class Server implements Observer {
                 socket = this.serverSocket.accept();
                 new Thread(new HandleRequest<String>(cacheUnitController, socket)).run();
             }
-        } catch (SocketException e) {
-            /// This exception happens only when receive STOP command
         } catch (IOException e) {
             e.printStackTrace();
         }

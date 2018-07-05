@@ -56,7 +56,7 @@ public class CacheUnit<T> {
             dataModelArr = null;
         }
 
-        return (DataModel<T>[])dataModelArr;
+        return dataModelArr;
     }
 
     /**
@@ -85,16 +85,5 @@ public class CacheUnit<T> {
 
     public int getCountSwaps() {
         return countSwaps;
-    }
-
-    public void saveAllDMsInDao(){
-        DataModel<T> dm;
-
-        for (int i = 111111; i < 111121; i++) {
-            dm = algo.putElement((long)i, new DataModel((long)i, "empty"));
-            if (dm != null) {
-                dao.save(dm);
-            }
-        }
     }
 }

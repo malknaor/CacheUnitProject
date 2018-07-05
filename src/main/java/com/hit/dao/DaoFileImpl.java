@@ -1,4 +1,3 @@
-
 package com.hit.dao;
 
 import com.hit.dm.DataModel;
@@ -22,22 +21,18 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         this.filePath = filePath;
         this.daoMap = new HashMap();
         this.toInitialize = true;
-        this.capacity = Integer.MAX_VALUE;
     }
 
     public DaoFileImpl(String filePath, int capacity) {
         this.filePath = filePath;
         this.daoMap = new HashMap();
         this.capacity = capacity;
-        this.toInitialize = true;
     }
 
     @Override
     public void save(DataModel<T> entity) {
         try {
-            if (this.toInitialize) {
-                readMapFromFile();
-            }
+            readMapFromFile();
             if (entity != null) {
                 this.daoMap.put(entity.getDataModelId(), entity);
                 writeMapToFile();
@@ -54,13 +49,9 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         }
 
         try {
-            if (this.toInitialize) {
-                readMapFromFile();
-            }
-            if (entity.getDataModelId() != null) {
-                this.daoMap.remove(entity.getDataModelId(), entity);
-                writeMapToFile();
-            }
+            readMapFromFile();
+            this.daoMap.remove(entity.getDataModelId(), entity);
+            writeMapToFile();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -75,9 +66,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         }
 
         try {
-            if (this.toInitialize) {
-                readMapFromFile();
-            }
+            readMapFromFile();
             retValue = this.daoMap.get(id);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -109,7 +98,7 @@ public class DaoFileImpl<T> implements IDao<Long, DataModel<T>> {
         try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(this.filePath))) {
             if (this.toInitialize) {
                 synchronized (this) {
-                    initializeDAO(); // used to initialize the dao if needed **Only happen at the beginning**
+                    initializeDAO(); // used to initialize the dao if needed
                 }
                 writeMapToFile();
             }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CacheUnitService<T> {
     private CacheUnit<T> cacheUnit;
-    private final int CACHE_CAPACITY = 10;
+    private final int CACHE_CAPACITY = 20;
     private String algorithmName;
     private int countRequests;
     private List<String> statisticsLines;
@@ -71,7 +71,6 @@ public class CacheUnitService<T> {
                     for (DataModel<T> dam : dataModels) {
                         if (dm.getDataModelId().equals(dam.getDataModelId())) {
                             dm.setContent(dam.getContent());
-
                             break;
                         }
                     }
@@ -87,7 +86,7 @@ public class CacheUnitService<T> {
         return updateSucceed;
     }
 
-    private DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
+    private synchronized DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
         List<Long> ids = new ArrayList<Long>();
 
         for (DataModel<T> dm : dataModels) {
@@ -97,8 +96,7 @@ public class CacheUnitService<T> {
         Long[] arr = new Long[ids.size()];
         ids.toArray(arr);
 
-        DataModel<T>[] dmArr = this.cacheUnit.getDataModels(arr);
-        return dmArr;
+        return this.cacheUnit.getDataModels(arr);
     }
 
     public String getCacheUnitStatistics() {
