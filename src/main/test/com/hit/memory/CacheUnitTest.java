@@ -6,9 +6,11 @@ import com.hit.dao.DaoFileImpl;
 import com.hit.dao.IDao;
 import com.hit.dm.DataModel;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class CacheUnitTest {
+
     @Test
     public void getDataModels() {
         IAlgoCache<Long, DataModel<String>> algo = new LRUAlgoCacheImpl<>(5);

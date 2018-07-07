@@ -40,12 +40,14 @@ public class Server implements Observer {
         try {
             this.continueLoop = true;
             this.serverSocket = new ServerSocket(this.port);
-            HandleRequest.countRequests = 0;
+            HandleRequest.countHandledRequests = 0;
             CacheUnitController<String> cacheUnitController = new CacheUnitController<String>();
             while (this.continueLoop) {
                 socket = this.serverSocket.accept();
                 new Thread(new HandleRequest<String>(cacheUnitController, socket)).run();
             }
+        } catch (SocketException e) {
+            /// This exception happens only when receive STOP command
         } catch (IOException e) {
             e.printStackTrace();
         }

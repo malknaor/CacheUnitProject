@@ -11,6 +11,7 @@ public class CacheUnit<T> {
     private IAlgoCache<Long, DataModel<T>> algo;
     private IDao<Long, DataModel<T>> dao;
     private int countSwaps;
+    private int countRequests;
 
     /**
      * @param algo - Cache paging algorithm and manage them
@@ -20,6 +21,7 @@ public class CacheUnit<T> {
         this.algo = algo;
         this.dao = dao;
         countSwaps = 0;
+        countRequests = 0;
     }
 
     /**
@@ -34,21 +36,24 @@ public class CacheUnit<T> {
 
         for (Long id : ids) {
             value = algo.putElement(id, null);
+            countRequests++;
             if (value == null) { //  if - value == null => cache is not full OR the item exist in ALGO =>
                 value = algo.getElement(id); //  check if the ID exist add to the ARR.
-
+                countRequests++;
                 if (value != null) { // the ID exist in cache
-                    dataModelArr[i++] = new DataModel<T>(value.getDataModelId(), value.getContent());
+                    dataModelArr[i++] = value;
                 } else { //  else the cache not full and you need to retrieve the DM with DAO and put in ALGO.
 
                     value = retrieveDMFromDAO(id);
+                    countRequests++;
                     if (value != null) {
-                        dataModelArr[i++] = new DataModel<T>(value.getDataModelId(), value.getContent());
+                        dataModelArr[i++] = value;
                     }
                 }
             } else { //  else - value != null => cache is full => retrieve the DM with DAO and put the DM to ALGO.
                 value = retrieveDMFromDAO(id);
-                dataModelArr[i++] = new DataModel<T>(value.getDataModelId(), value.getContent());
+                dataModelArr[i++] = value;
+                countRequests++;
             }
         }
 
@@ -70,9 +75,9 @@ public class CacheUnit<T> {
 
         // store the pair (id, value) in cache if necessary
         if (value != null) {
-            dao.delete(value);
             tempValue = algo.putElement(id, value);
-
+            dao.delete(value);
+            
             // store the DataModel (value) in the DAO in case ALGO is full
             if (tempValue != null) {
                 countSwaps++;
@@ -85,5 +90,16 @@ public class CacheUnit<T> {
 
     public int getCountSwaps() {
         return countSwaps;
+    }
+    
+    public int getCountRequest() {
+        return countRequests;
+    }
+
+    public void deleteDataModelFromMemory(Long id, DataModel<T> entity){
+        this.algo.removeElement(id);
+        if (entity != null) {
+        	this.dao.delete(entity);
+        }
     }
 }

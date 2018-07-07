@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class HandleRequest<T> implements Runnable {
     private CacheUnitController<T> cacheUnitController;
     private Socket socket;
-    public static int countRequests = 0;
+    public static int countHandledRequests = 0;
 
     public HandleRequest(CacheUnitController<T> cacheUnitController, Socket socket) {
         this.cacheUnitController = cacheUnitController;
@@ -34,7 +34,7 @@ public class HandleRequest<T> implements Runnable {
 
             switch (action.toLowerCase()) {
                 case "update":
-                    countRequests++;
+                    countHandledRequests++;
                     if (cacheUnitController.update(request.getBody())) {
                         write.println("Updated the requested content...");
                     } else {
@@ -43,7 +43,7 @@ public class HandleRequest<T> implements Runnable {
 
                     break;
                 case "delete":
-                    countRequests++;
+                    countHandledRequests++;
                     if (cacheUnitController.delete(request.getBody())) {
                         write.println("Deleted the requested content...");
                     } else {
@@ -52,7 +52,7 @@ public class HandleRequest<T> implements Runnable {
 
                     break;
                 case "get":
-                    countRequests++;
+                    countHandledRequests++;
                     DataModel<T>[] dms = cacheUnitController.get(request.getBody());
                     if (dms != null) {
                         response = "Retrieved the requested content...\n";

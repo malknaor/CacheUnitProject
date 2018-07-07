@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CacheUnitService<T> {
     private CacheUnit<T> cacheUnit;
-    private final int CACHE_CAPACITY = 20;
+    private final int CACHE_CAPACITY = 10;
     private String algorithmName;
     private int countRequests;
     private List<String> statisticsLines;
@@ -42,7 +42,7 @@ public class CacheUnitService<T> {
         try {
             if (dms != null) {
                 for (DataModel<T> dm : dms) {
-                    dm = null;
+                    cacheUnit.deleteDataModelFromMemory(dm.getDataModelId(), dm);
                 }
             } else {
                 deleteSucceed = false;
@@ -71,6 +71,7 @@ public class CacheUnitService<T> {
                     for (DataModel<T> dam : dataModels) {
                         if (dm.getDataModelId().equals(dam.getDataModelId())) {
                             dm.setContent(dam.getContent());
+
                             break;
                         }
                     }
@@ -86,7 +87,7 @@ public class CacheUnitService<T> {
         return updateSucceed;
     }
 
-    private synchronized DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
+    private DataModel<T>[] getFilteredDataModels(DataModel<T>[] dataModels) {
         List<Long> ids = new ArrayList<Long>();
 
         for (DataModel<T> dm : dataModels) {
@@ -96,15 +97,16 @@ public class CacheUnitService<T> {
         Long[] arr = new Long[ids.size()];
         ids.toArray(arr);
 
-        return this.cacheUnit.getDataModels(arr);
+        DataModel<T>[] dmArr = this.cacheUnit.getDataModels(arr);
+        return dmArr;
     }
 
     public String getCacheUnitStatistics() {
         String[] lines = new String[statisticsLines.size()];
         statisticsLines.toArray(lines);
 
-        statistics = lines[0] + lines[1] + lines[2] + HandleRequest.countRequests + ".\n"
-                + lines[3] + countRequests + ".\n" + lines[4] + cacheUnit.getCountSwaps() + ".\n";
+        statistics = lines[0] + lines[1] + lines[2] + HandleRequest.countHandledRequests + ".\n"
+                + lines[3] + cacheUnit.getCountRequest() + ".\n" + lines[4] + cacheUnit.getCountSwaps() + ".\n";
 
         return statistics;
     }
